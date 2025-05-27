@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Pages Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 50px auto; 
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .test-item { 
+            margin: 10px 0; 
+            padding: 10px; 
+            border-radius: 5px; 
+            background: rgba(255,255,255,0.1);
+        }
+        .success { background: rgba(76, 175, 80, 0.3); }
+        .error { background: rgba(244, 67, 54, 0.3); }
+    </style>
+</head>
+<body>
+    <h1>🧪 GitHub Pages Deployment Test</h1>
+    <p>This page tests if GitHub Pages is serving files correctly.</p>
+    
+    <div class="test-item">
+        <strong>✅ HTML Loading:</strong> SUCCESS (you can see this page)
+    </div>
+    
+    <div class="test-item" id="css-test">
+        <strong>🎨 CSS Loading:</strong> <span id="css-status">Testing...</span>
+    </div>
+    
+    <div class="test-item" id="js-test">
+        <strong>⚡ JavaScript:</strong> <span id="js-status">Testing...</span>
+    </div>
+    
+    <div class="test-item">
+        <strong>🌐 Current URL:</strong> <span id="current-url"></span>
+    </div>
+    
+    <div class="test-item">
+        <strong>📁 Base Path:</strong> <span id="base-path"></span>
+    </div>
+    
+    <script>
+        // Test JavaScript execution
+        document.getElementById('js-status').textContent = 'SUCCESS';
+        document.getElementById('js-test').classList.add('success');
+        
+        // Show current URL info
+        document.getElementById('current-url').textContent = window.location.href;
+        document.getElementById('base-path').textContent = window.location.pathname;
+        
+        // Test CSS by checking computed styles
+        const testDiv = document.getElementById('css-test');
+        const computedStyle = window.getComputedStyle(testDiv);
+        const hasBackground = computedStyle.backgroundColor !== 'rgba(0, 0, 0, 0)' && computedStyle.backgroundColor !== 'transparent';
+        
+        if (hasBackground) {
+            document.getElementById('css-status').textContent = 'SUCCESS';
+            testDiv.classList.add('success');
+        } else {
+            document.getElementById('css-status').textContent = 'FAILED';
+            testDiv.classList.add('error');
+        }
+        
+        // Test asset loading
+        console.log('GitHub Pages Test Results:');
+        console.log('URL:', window.location.href);
+        console.log('Base Path:', window.location.pathname);
+        console.log('CSS Working:', hasBackground);
+        console.log('JS Working: YES');
+    </script>
+</body>
+</html>
