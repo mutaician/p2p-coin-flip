@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>P2P Coin Flip - Peer to Peer Gambling</title>
+    <meta name="description" content="A peer-to-peer coin flip gambling game where two players bet and compete in fair, random coin flips.">
+  </head>
+  <body>
+    <div id="app">
+      <header class="header">
+        <h1 class="header__title">🪙 P2P Coin Flip</h1>
+        <p class="header__subtitle">Peer-to-peer coin flip gambling</p>
+      </header>
+
+      <!-- Winners Ticker -->
+      <div class="winners-ticker">
+        <div class="ticker-content" id="winners-ticker">
+          <!-- Dynamic content will be populated here -->
+        </div>
+      </div>
+
+      <main class="main">
+        <!-- Game States -->
+        <div id="landing-screen" class="screen active">
+          <div class="card">
+            <h2>Welcome to P2P Coin Flip</h2>
+            <p>Create a game or join an existing one to start gambling!</p>
+            <div class="button-group">
+              <button id="create-game-btn" class="btn btn--primary">Create Game</button>
+              <button id="join-game-btn" class="btn btn--secondary">Join Game</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="create-game-screen" class="screen">
+          <div class="card">
+            <h2>Create New Game</h2>
+            <form id="create-game-form">
+              <div class="form-group">
+                <label for="player-name">Your Name:</label>
+                <input type="text" id="player-name" placeholder="Enter your name" required>
+              </div>
+              <div class="form-group">
+                <label for="bet-amount">Bet Amount:</label>
+                <input type="number" id="bet-amount" placeholder="Enter bet amount" min="1" max="1000" required>
+              </div>
+              <div class="form-group">
+                <label for="coin-choice">Choose Your Side:</label>
+                <div class="coin-choice-buttons">
+                  <button type="button" class="choice-btn" data-choice="heads">
+                    <div class="choice-coin heads">H</div>
+                    <span>Heads</span>
+                  </button>
+                  <button type="button" class="choice-btn" data-choice="tails">
+                    <div class="choice-coin tails">T</div>
+                    <span>Tails</span>
+                  </button>
+                </div>
+                <input type="hidden" id="coin-choice" required>
+              </div>
+              <div class="button-group">
+                <button type="submit" class="btn btn--primary">Create Game</button>
+                <button type="button" id="back-to-landing" class="btn btn--secondary">Back</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div id="join-game-screen" class="screen">
+          <div class="card">
+            <h2>Join Existing Game</h2>
+            <form id="join-game-form">
+              <div class="form-group">
+                <label for="joiner-name">Your Name:</label>
+                <input type="text" id="joiner-name" placeholder="Enter your name" required>
+              </div>
+              <div class="form-group">
+                <label for="game-id">Game ID:</label>
+                <input type="text" id="game-id" placeholder="Enter game ID" required>
+              </div>
+              <div class="button-group">
+                <button type="submit" class="btn btn--primary">Join Game</button>
+                <button type="button" id="back-to-landing-2" class="btn btn--secondary">Back</button>
+              </div>
+            </form>
+            <div id="available-games" class="available-games">
+              <h3>Available Games:</h3>
+              <div id="games-list" class="games-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="waiting-screen" class="screen">
+          <div class="card">
+            <h2>Waiting for Opponent</h2>
+            <div class="game-info">
+              <p><strong>Game ID:</strong> <span id="current-game-id"></span></p>
+              <p><strong>Your Name:</strong> <span id="current-player-name"></span></p>
+              <p><strong>Bet Amount:</strong> $<span id="current-bet-amount"></span></p>
+            </div>
+            <div class="loading-spinner"></div>
+            <p>Share the Game ID with your opponent</p>
+            <button id="cancel-game" class="btn btn--danger">Cancel Game</button>
+          </div>
+        </div>
+
+        <div id="game-ready-screen" class="screen">
+          <div class="card">
+            <h2>Game Ready!</h2>
+            <div class="players-info">
+              <div class="player">
+                <h3 id="player1-name"></h3>
+                <p>Bet: $<span id="player1-bet"></span></p>
+                <p>Choice: <span id="player1-choice" class="choice-badge"></span></p>
+              </div>
+              <div class="vs">VS</div>
+              <div class="player">
+                <h3 id="player2-name"></h3>
+                <p>Bet: $<span id="player2-bet"></span></p>
+                <p>Choice: <span id="player2-choice" class="choice-badge"></span></p>
+              </div>
+            </div>
+            <div class="total-pot">
+              <p>Total Pot: $<span id="total-pot"></span></p>
+            </div>
+            <button id="start-flip" class="btn btn--primary btn--large">Flip the Coin!</button>
+          </div>
+        </div>
+
+        <div id="coin-flip-screen" class="screen">
+          <div class="card">
+            <h2>Coin Flip in Progress...</h2>
+            <div class="coin-container">
+              <div id="coin" class="coin">
+                <div class="coin-side coin-heads">H</div>
+                <div class="coin-side coin-tails">T</div>
+              </div>
+            </div>
+            <p id="flip-status">Flipping...</p>
+          </div>
+        </div>
+
+        <div id="result-screen" class="screen">
+          <div class="card">
+            <h2 id="result-title"></h2>
+            <div class="result-coin">
+              <div id="result-coin-display" class="coin-result"></div>
+            </div>
+            <div class="result-info">
+              <p id="result-text"></p>
+              <p id="winner-text"></p>
+              <p id="payout-text"></p>
+            </div>
+            <div class="button-group">
+              <button id="play-again" class="btn btn--primary">Play Again</button>
+              <button id="back-to-home" class="btn btn--secondary">Back to Home</button>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="footer">
+        <p>⚠️ Demo purposes only - No real money involved</p>
+      </footer>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

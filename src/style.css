@@ -1,0 +1,741 @@
+/* Root Variables */
+:root {
+  --primary-color: #6366f1;
+  --primary-hover: #4f46e5;
+  --secondary-color: #64748b;
+  --success-color: #10b981;
+  --danger-color: #ef4444;
+  --warning-color: #f59e0b;
+  
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-card: rgba(30, 41, 59, 0.8);
+  --bg-glass: rgba(255, 255, 255, 0.1);
+  
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
+  
+  --border-color: rgba(255, 255, 255, 0.2);
+  --shadow-primary: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  
+  --border-radius: 12px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset & Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  padding: 2rem 1rem;
+  background: var(--bg-glass);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.header__title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header__subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+/* Main Content */
+.main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  position: relative;
+}
+
+/* Screen Management */
+.screen {
+  display: none;
+  width: 100%;
+  max-width: 500px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.screen.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Cards */
+.card {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  box-shadow: var(--shadow-card);
+  text-align: center;
+}
+
+.card h2 {
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.card p {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+/* Forms */
+.form-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-glass);
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.form-group input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Buttons */
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+.btn--primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.btn--primary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-primary);
+}
+
+.btn--secondary {
+  background: var(--secondary-color);
+  color: white;
+}
+
+.btn--secondary:hover {
+  background: #475569;
+  transform: translateY(-2px);
+}
+
+.btn--danger {
+  background: var(--danger-color);
+  color: white;
+}
+
+.btn--danger:hover {
+  background: #dc2626;
+  transform: translateY(-2px);
+}
+
+.btn--large {
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Game Components */
+.game-info {
+  background: var(--bg-glass);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.game-info p {
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.game-info span {
+  color: var(--warning-color);
+  font-weight: 600;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--border-color);
+  border-top: 4px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 1rem auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Players Info */
+.players-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.player {
+  flex: 1;
+  background: var(--bg-glass);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.player h3 {
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.vs {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--warning-color);
+}
+
+.total-pot {
+  background: linear-gradient(135deg, var(--success-color), #059669);
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.total-pot p {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Coin Animation */
+.coin-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  margin: 2rem 0;
+}
+
+.coin {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.coin-side {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: 700;
+  backface-visibility: hidden;
+  border: 4px solid var(--warning-color);
+  box-shadow: var(--shadow-card);
+}
+
+.coin-heads {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: white;
+}
+
+.coin-tails {
+  background: linear-gradient(135deg, #64748b, #475569);
+  color: white;
+  transform: rotateY(180deg);
+}
+
+.coin.flipping {
+  animation: coinFlip 2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes coinFlip {
+  0% { transform: rotateY(0deg) rotateX(0deg); }
+  25% { transform: rotateY(450deg) rotateX(180deg); }
+  50% { transform: rotateY(900deg) rotateX(360deg); }
+  75% { transform: rotateY(1350deg) rotateX(540deg); }
+  100% { transform: rotateY(1800deg) rotateX(720deg); }
+}
+
+.coin.heads {
+  transform: rotateY(0deg);
+}
+
+.coin.tails {
+  transform: rotateY(180deg);
+}
+
+/* Result Display */
+.result-coin {
+  margin: 2rem 0;
+}
+
+.coin-result {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 auto;
+  border: 3px solid var(--warning-color);
+  box-shadow: var(--shadow-card);
+}
+
+.coin-result.heads {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: white;
+}
+
+.coin-result.tails {
+  background: linear-gradient(135deg, #64748b, #475569);
+  color: white;
+}
+
+.result-info {
+  background: var(--bg-glass);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.result-info p {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+/* Available Games */
+.available-games {
+  margin-top: 2rem;
+  text-align: left;
+}
+
+.available-games h3 {
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.games-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.game-item {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.game-item:hover {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: var(--primary-color);
+}
+
+.game-item p {
+  margin-bottom: 0.25rem;
+  color: var(--text-primary);
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 1rem;
+  background: var(--bg-glass);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+/* Additional Animations and Toast Styles */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0,0,0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -10px, 0);
+  }
+  70% {
+    transform: translate3d(0, -5px, 0);
+  }
+  90% {
+    transform: translate3d(0, -2px, 0);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(99, 102, 241, 0.8);
+  }
+}
+
+/* Enhanced Coin Animation */
+.coin.result-heads {
+  transform: rotateY(0deg);
+  animation: bounce 0.6s ease-out;
+}
+
+.coin.result-tails {
+  transform: rotateY(180deg);
+  animation: bounce 0.6s ease-out;
+}
+
+/* Button Hover Effects */
+.btn:hover {
+  animation: pulse 0.3s ease-in-out;
+}
+
+.btn--primary:hover {
+  animation: glow 1s ease-in-out infinite alternate;
+}
+
+/* Card Hover Effects */
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-primary);
+}
+
+/* Game Item Hover Animation */
+.game-item:hover {
+  animation: slideIn 0.2s ease-out;
+}
+
+/* Winners Ticker */
+.winners-ticker {
+  background: linear-gradient(90deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 50%, rgba(15, 23, 42, 0.9) 100%);
+  border-bottom: 1px solid var(--border-color);
+  overflow: hidden;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.ticker-content {
+  display: flex;
+  animation: tickerScroll 60s linear infinite;
+  white-space: nowrap;
+}
+
+.ticker-item {
+  display: flex;
+  align-items: center;
+  margin-right: 3rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.ticker-item .winner-name {
+  color: var(--warning-color);
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+.ticker-item .winner-amount {
+  color: var(--success-color);
+  font-weight: 600;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.ticker-item .winner-choice {
+  background: var(--bg-glass);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  margin: 0 0.5rem;
+  font-size: 0.8rem;
+}
+
+@keyframes tickerScroll {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Coin Choice Buttons */
+.coin-choice-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.choice-btn {
+  background: var(--bg-glass);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 100px;
+}
+
+.choice-btn:hover {
+  border-color: var(--primary-color);
+  background: rgba(99, 102, 241, 0.1);
+  transform: translateY(-2px);
+}
+
+.choice-btn.active,
+.choice-btn.selected {
+  border-color: var(--primary-color);
+  background: rgba(99, 102, 241, 0.2);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+.choice-coin {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  border: 2px solid var(--warning-color);
+  transition: var(--transition);
+}
+
+.choice-coin.heads {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: white;
+}
+
+.choice-coin.tails {
+  background: linear-gradient(135deg, #64748b, #475569);
+  color: white;
+}
+
+.choice-btn span {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.choice-btn.selected .choice-coin {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(251, 191, 36, 0.5);
+}
+
+/* Choice Badge */
+.choice-badge {
+  background: var(--bg-glass);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.choice-badge.heads {
+  color: var(--warning-color);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.choice-badge.tails {
+  color: var(--secondary-color);
+  border: 1px solid rgba(100, 116, 139, 0.3);
+}
+
+.choice-badge::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+}
+
+.choice-badge.heads::before {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+}
+
+.choice-badge.tails::before {
+  background: linear-gradient(135deg, #64748b, #475569);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header__title {
+    font-size: 2rem;
+  }
+  
+  .card {
+    padding: 1.5rem;
+  }
+  
+  .players-info {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .vs {
+    transform: rotate(90deg);
+  }
+  
+  .button-group {
+    flex-direction: column;
+  }
+  
+  .btn {
+    width: 100%;
+  }
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
