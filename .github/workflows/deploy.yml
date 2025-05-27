@@ -3,8 +3,11 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+
+# Allow only one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   build-and-deploy:
@@ -15,6 +18,10 @@ jobs:
       pages: write
       id-token: write
     
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -23,18 +30,46 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
+        cache: 'npm'
         
     - name: Setup pnpm
       uses: pnpm/action-setup@v2
       with:
         version: 8
+        run_install: false
+        
+    - name: Get pnpm store directory
+      shell: bash
+      run: |
+        echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+        
+    - name: Setup pnpm cache
+      uses: actions/cache@v3
+      with:
+        path: ${{ env.STORE_PATH }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
         
     - name: Install dependencies
-      run: pnpm install
+      run: pnpm install --frozen-lockfile
       
     - name: Build
-      run: pnpm run build
+      run: |
+        echo "Building with NODE_ENV=production"
+        NODE_ENV=production pnpm run build
       
+    - name: Debug build output
+      run: |
+        echo "=== Build Output Structure ==="
+        find dist -type f -name "*.html" -o -name "*.css" -o -name "*.js" | head -20
+        echo ""
+        echo "=== dist/index.html head section ==="
+        head -15 dist/index.html
+        echo ""
+        echo "=== Checking asset references ==="
+        grep -E "(href=|src=)" dist/index.html || true
+        
     - name: Setup Pages
       uses: actions/configure-pages@v4
       

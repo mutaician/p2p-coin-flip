@@ -6,6 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>P2P Coin Flip - Peer to Peer Gambling</title>
     <meta name="description" content="A peer-to-peer coin flip gambling game where two players bet and compete in fair, random coin flips.">
+    
+    <!-- Error handling for asset loading -->
+    <script>
+      window.addEventListener('error', function(e) {
+        if (e.target !== window) {
+          console.error('Asset loading failed:', e.target.src || e.target.href);
+          
+          // Show user-friendly error for critical assets
+          if (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK') {
+            const errorDiv = document.createElement('div');
+            errorDiv.style.cssText = 'position:fixed;top:20px;left:20px;right:20px;background:#ff4444;color:white;padding:15px;border-radius:5px;z-index:9999;font-family:Arial,sans-serif;';
+            errorDiv.innerHTML = `
+              <strong>Loading Error:</strong> Some game assets failed to load. 
+              <br>This might be a GitHub Pages configuration issue.
+              <br><small>Failed: ${e.target.src || e.target.href}</small>
+              <button onclick="this.parentElement.remove()" style="float:right;background:rgba(255,255,255,0.2);border:none;color:white;padding:5px 10px;border-radius:3px;cursor:pointer;">×</button>
+            `;
+            document.body.appendChild(errorDiv);
+          }
+        }
+      });
+    </script>
   </head>
   <body>
     <div id="app">
