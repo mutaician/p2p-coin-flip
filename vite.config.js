@@ -4,7 +4,7 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   // Use relative paths for GitHub Pages compatibility
   base: process.env.NODE_ENV === 'production' 
-    ? '/p2p-coinflip/' 
+    ? '/p2p-coin-flip/' 
     : '/',
   build: {
     outDir: 'dist',

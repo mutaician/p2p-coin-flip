@@ -24,8 +24,8 @@ The application is configured for GitHub Pages deployment with the following set
 
 After deployment, visit these URLs to test:
 
-1. **Main App**: `https://[username].github.io/p2p-coinflip/`
-2. **Test Page**: `https://[username].github.io/p2p-coinflip/test.html`
+1. **Main App**: `https://[username].github.io/p2p-coin-flip/`
+2. **Test Page**: `https://[username].github.io/p2p-coin-flip/test.html`
 
 The test page will show:
 - ✅ HTML Loading (if page loads)
@@ -41,7 +41,7 @@ The test page will show:
 #### Issue: "HTML loads but CSS/JS don't load"
 **Symptoms**: Plain HTML without styling, console errors about asset loading
 **Solutions**:
-1. Check repository name matches exactly: `p2p-coinflip`
+1. Check repository name matches exactly: `p2p-coin-flip`
 2. Verify GitHub Actions workflow completed successfully
 3. Check browser console for specific asset URLs that are failing
 
@@ -66,8 +66,8 @@ cd dist && python -m http.server 8000
 
 ### 📋 Expected Asset URLs
 When working correctly, assets should load from:
-- CSS: `https://[username].github.io/p2p-coinflip/assets/index-[hash].css`
-- JS: `https://[username].github.io/p2p-coinflip/assets/index-[hash].js`
+- CSS: `https://[username].github.io/p2p-coin-flip/assets/index-[hash].css`
+- JS: `https://[username].github.io/p2p-coin-flip/assets/index-[hash].js`
 
 ### 🆘 Still Having Issues?
 
