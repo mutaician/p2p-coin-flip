@@ -50,8 +50,22 @@
             <h2>Welcome to P2P Coin Flip</h2>
             <p>Create a game or join an existing one to start gambling!</p>
             <div class="button-group">
-              <button id="create-game-btn" class="btn btn--primary">Create Game</button>
-              <button id="join-game-btn" class="btn btn--secondary">Join Game</button>
+              <button id="create-game-btn" class="btn btn--primary">🎮 Create Game</button>
+            </div>
+          </div>
+          
+          <!-- Available Games Section -->
+          <div class="available-games-section">
+            <h3>🎲 Available Games</h3>
+            <p class="games-guidance">👇 Click on any game below to join instantly!</p>
+            <div id="main-available-games" class="available-games">
+              <div class="loading-games">
+                <div class="loading-spinner"></div>
+                <p>Loading available games...</p>
+              </div>
+            </div>
+            <div class="no-games-message" style="display: none;">
+              <p>No games available right now. Be the first to create one! 🎮</p>
             </div>
           </div>
         </div>
@@ -62,11 +76,11 @@
             <form id="create-game-form">
               <div class="form-group">
                 <label for="player-name">Your Name:</label>
-                <input type="text" id="player-name" placeholder="Enter your name" required>
+                <input type="text" id="player-name" placeholder="e.g. John Doe, Player123, etc." required>
               </div>
               <div class="form-group">
                 <label for="bet-amount">Bet Amount:</label>
-                <input type="number" id="bet-amount" placeholder="Enter bet amount" min="1" max="1000" required>
+                <input type="number" id="bet-amount" placeholder="Amount in dollars (min: $1, max: $1000)" min="1" max="1000" required>
               </div>
               <div class="form-group">
                 <label for="coin-choice">Choose Your Side:</label>
@@ -96,11 +110,11 @@
             <form id="join-game-form">
               <div class="form-group">
                 <label for="joiner-name">Your Name:</label>
-                <input type="text" id="joiner-name" placeholder="Enter your name" required>
+                <input type="text" id="joiner-name" placeholder="Enter your player name (e.g. Player1, Alice, etc.)" required>
               </div>
               <div class="form-group">
                 <label for="game-id">Game ID:</label>
-                <input type="text" id="game-id" placeholder="Enter game ID" required>
+                <input type="text" id="game-id" placeholder="Enter the unique game ID from your opponent" required>
               </div>
               <div class="button-group">
                 <button type="submit" class="btn btn--primary">Join Game</button>
@@ -187,6 +201,35 @@
         <p>⚠️ Demo purposes only - No real money involved</p>
       </footer>
     </div>
+    
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+    
+    <!-- Quick Join Modal -->
+    <div id="quick-join-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>🎯 Quick Join Game</h3>
+          <button class="modal-close" id="quick-join-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div id="selected-game-info" class="selected-game-info">
+            <!-- Game info will be populated here -->
+          </div>
+          <form id="quick-join-form">
+            <div class="form-group">
+              <label for="quick-join-name">Your Name:</label>
+              <input type="text" id="quick-join-name" placeholder="Enter your name" required>
+            </div>
+            <div class="button-group">
+              <button type="submit" class="btn btn--primary">Join Game</button>
+              <button type="button" class="btn btn--secondary" id="quick-join-cancel">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

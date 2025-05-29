@@ -5,14 +5,17 @@ A peer-to-peer coin flip gambling web application where two players can place be
 ## 🎮 Features
 
 - **Peer-to-Peer Betting**: Two players can create and join games
+- **Quick Join**: See available games directly on the main page and join with one click
 - **Fair Random Generation**: Cryptographically secure random coin flips
+- **Real-time Updates**: Live game state updates using Gun.js P2P network
 - **Modern UI**: Beautiful, responsive design with smooth animations
-- **Real-time Updates**: Live game state updates and notifications
 - **Mobile Friendly**: Optimized for all device sizes
+- **Cross-Browser Sync**: Games sync in real-time across different browsers
 
 ## 🛠️ Tech Stack
 
 - **Frontend**: Vanilla JavaScript, HTML5, CSS3
+- **P2P Network**: Gun.js for real-time data synchronization
 - **Build Tool**: Vite
 - **Package Manager**: pnpm
 - **Deployment**: GitHub Pages
@@ -59,10 +62,11 @@ pnpm run deploy
 
 ## 🎯 How to Play
 
-1. **Create a Game**: Set your bet amount and wait for an opponent
-2. **Join a Game**: Find an existing game and match the bet
+1. **Quick Join**: Click on any available game on the main page to join instantly
+2. **Create a Game**: Set your bet amount and coin choice, wait for an opponent
 3. **Coin Flip**: Watch the animated coin flip determine the winner
 4. **Collect Winnings**: Winner takes the entire pot
+5. **Play Again**: Start a new game or join another player's game
 
 ## 🔧 Development
 

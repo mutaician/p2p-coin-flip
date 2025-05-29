@@ -1,7 +1,10 @@
 // UI management and DOM interactions
+import JSConfetti from 'js-confetti';
+
 class UIManager {
   constructor(gameManager) {
     this.gameManager = gameManager;
+    this.jsConfetti = new JSConfetti();
     this.screens = {
       landing: document.getElementById('landing-screen'),
       createGame: document.getElementById('create-game-screen'),
@@ -12,26 +15,44 @@ class UIManager {
       result: document.getElementById('result-screen')
     };
     
-    this.initializeEventListeners();
+    this.setupEventListeners();
     this.initializeCoinChoiceButtons();
     this.initializeWinnersTicker();
     this.showScreen('landing');
-    this.updateAvailableGames();
     
-    // Auto-refresh available games every 10 seconds for Gun.js
-    setInterval(() => this.updateAvailableGames(), 10000);
+    // Initialize main page games
+    this.updateMainPageGames();
+    
+    // Auto-refresh available games every 15 seconds
+    setInterval(() => {
+      this.updateMainPageGames();
+    }, 15000);
   }
 
   // Initialize all event listeners
-  initializeEventListeners() {
+  setupEventListeners() {
     // Landing screen
     document.getElementById('create-game-btn').addEventListener('click', () => {
       this.showScreen('createGame');
     });
+
+    // Quick join modal events
+    document.getElementById('quick-join-close').addEventListener('click', () => {
+      this.hideQuickJoinModal();
+    });
     
-    document.getElementById('join-game-btn').addEventListener('click', () => {
-      this.showScreen('joinGame');
-      this.updateAvailableGames();
+    document.getElementById('quick-join-cancel').addEventListener('click', () => {
+      this.hideQuickJoinModal();
+    });
+    
+    document.getElementById('quick-join-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'quick-join-modal') {
+        this.hideQuickJoinModal();
+      }
+    });
+    
+    document.getElementById('quick-join-form').addEventListener('submit', (e) => {
+      this.handleQuickJoinGame(e);
     });
 
     // Create game screen
@@ -40,15 +61,6 @@ class UIManager {
     });
     
     document.getElementById('back-to-landing').addEventListener('click', () => {
-      this.showScreen('landing');
-    });
-
-    // Join game screen
-    document.getElementById('join-game-form').addEventListener('submit', (e) => {
-      this.handleJoinGame(e);
-    });
-    
-    document.getElementById('back-to-landing-2').addEventListener('click', () => {
       this.showScreen('landing');
     });
 
@@ -119,63 +131,6 @@ class UIManager {
       document.getElementById('create-game-form').reset();
       document.getElementById('coin-choice').value = '';
       document.querySelectorAll('.choice-btn').forEach(btn => btn.classList.remove('active'));
-      
-    } catch (error) {
-      this.showError(error.message);
-    }
-  }
-
-  // Handle join game form submission
-  async handleJoinGame(e) {
-    e.preventDefault();
-    
-    try {
-      const playerName = this.gameManager.validatePlayerName(
-        document.getElementById('joiner-name').value
-      );
-      const gameId = this.gameManager.validateGameId(
-        document.getElementById('game-id').value
-      );
-
-      const game = await this.gameManager.joinGame(gameId, playerName);
-      
-      // Set up real-time subscription for game updates
-      await this.gameManager.subscribeToGame(game.id, (updatedGame) => {
-        this.handleGameUpdate(updatedGame);
-      });
-      
-      this.showGameReadyScreen(game);
-      
-      // Clear form
-      document.getElementById('join-game-form').reset();
-      
-    } catch (error) {
-      this.showError(error.message);
-    }
-  }
-
-  // Handle join game by clicking on available game
-  async handleJoinAvailableGame(gameId) {
-    const playerName = document.getElementById('joiner-name').value;
-    
-    if (!playerName) {
-      this.showError('Please enter your name first');
-      return;
-    }
-    
-    try {
-      const validatedName = this.gameManager.validatePlayerName(playerName);
-      const game = await this.gameManager.joinGame(gameId, validatedName);
-      
-      // Set up real-time subscription for game updates
-      await this.gameManager.subscribeToGame(game.id, (updatedGame) => {
-        this.handleGameUpdate(updatedGame);
-      });
-      
-      this.showGameReadyScreen(game);
-      
-      // Clear form
-      document.getElementById('join-game-form').reset();
       
     } catch (error) {
       this.showError(error.message);
@@ -333,29 +288,218 @@ class UIManager {
 
   // Create game list item element
   createGameListItem(game) {
-    const gameDiv = document.createElement('div');
-    gameDiv.className = 'game-item';
-    
-    // Safe access to nested properties
-    const playerName = game.player1?.name || 'Unknown';
-    const playerBet = game.player1?.bet || 0;
-    const playerChoice = game.player1?.choice || 'heads';
-    const choiceDisplay = playerChoice ? playerChoice.toUpperCase() : 'HEADS';
-    
-    gameDiv.innerHTML = `
-      <p><strong>Game ID:</strong> ${game.id}</p>
-      <p><strong>Player:</strong> ${playerName}</p>
-      <p><strong>Bet:</strong> $${playerBet}</p>
-      <p><strong>Choice:</strong> <span class="choice-badge ${playerChoice}">${choiceDisplay}</span></p>
-      <p><strong>Created:</strong> ${this.formatTime(game.createdAt)}</p>
+    const gameElement = document.createElement('div');
+    gameElement.className = 'game-item';
+    gameElement.innerHTML = `
+      <div class="game-info">
+        <strong>${game.player1.name}</strong>
+        <span>Bet: $${game.player1.bet}</span>
+        <span>Choice: ${game.player1.choice}</span>
+      </div>
+      <button class="btn btn--small btn--secondary join-available-game" data-game-id="${game.id}">
+        Join
+      </button>
     `;
     
-    gameDiv.addEventListener('click', () => {
-      document.getElementById('game-id').value = game.id;
+    const joinButton = gameElement.querySelector('.join-available-game');
+    joinButton.addEventListener('click', () => {
       this.handleJoinAvailableGame(game.id);
     });
     
-    return gameDiv;
+    return gameElement;
+  }
+
+  // Update available games on main page
+  async updateMainPageGames() {
+    const container = document.getElementById('main-available-games');
+    const noGamesMessage = document.querySelector('.no-games-message');
+    
+    try {
+      // Show loading state
+      container.innerHTML = `
+        <div class="loading-games">
+          <div class="loading-spinner"></div>
+          <p>Loading available games...</p>
+        </div>
+      `;
+      noGamesMessage.style.display = 'none';
+      
+      const games = await this.gameManager.getAvailableGames();
+      
+      if (games.length === 0) {
+        container.innerHTML = '';
+        noGamesMessage.style.display = 'block';
+        return;
+      }
+      
+      container.innerHTML = games.map(game => `
+        <div class="game-card quick-join-game" data-game-id="${game.id}">
+          <div class="game-header">
+            <h4>${game.player1.name}</h4>
+            <span class="game-bet">💰 $${game.player1.bet}</span>
+          </div>
+          <div class="game-details">
+            <div class="detail-item">
+              <span class="detail-label">Choice</span>
+              <div class="choice-display ${game.player1.choice}">
+                ${game.player1.choice === 'heads' ? 'H' : 'T'}
+              </div>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Created</span>
+              <span class="detail-value">${this.getTimeAgo(game.createdAt)}</span>
+            </div>
+          </div>
+          <div class="game-actions">
+            <button class="btn btn--primary btn--small">
+              🎯 Quick Join
+            </button>
+          </div>
+        </div>
+      `).join('');
+      
+      // Add click handlers for quick join
+      container.querySelectorAll('.quick-join-game').forEach(gameCard => {
+        gameCard.addEventListener('click', (e) => {
+          const gameId = gameCard.dataset.gameId;
+          const game = games.find(g => g.id === gameId);
+          this.showQuickJoinModal(game);
+        });
+      });
+      
+      noGamesMessage.style.display = 'none';
+      
+    } catch (error) {
+      console.error('Error updating main page games:', error);
+      container.innerHTML = `
+        <div class="error-state">
+          <p>❌ Failed to load games</p>
+          <button class="btn btn--secondary btn--small" onclick="this.updateMainPageGames()">
+            Try Again
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  // Show quick join modal
+  showQuickJoinModal(game) {
+    const modal = document.getElementById('quick-join-modal');
+    const gameInfo = document.getElementById('selected-game-info');
+    
+    // Populate game info
+    gameInfo.innerHTML = `
+      <h4>🎮 Joining ${game.player1.name}'s Game</h4>
+      <div class="game-details">
+        <div class="detail-item">
+          <span class="detail-label">Bet Amount</span>
+          <span class="detail-value">💰 $${game.player1.bet}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">${game.player1.name} Chose</span>
+          <div class="choice-display ${game.player1.choice}">
+            ${game.player1.choice === 'heads' ? '👑 Heads' : '🔥 Tails'}
+          </div>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">You Get</span>
+          <div class="choice-display ${game.player1.choice === 'heads' ? 'tails' : 'heads'}">
+            ${game.player1.choice === 'heads' ? '🔥 Tails' : '👑 Heads'}
+          </div>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Total Pot</span>
+          <span class="detail-value">💰 $${game.player1.bet * 2}</span>
+        </div>
+      </div>
+    `;
+    
+    // Store game info for form submission
+    modal.dataset.gameId = game.id;
+    modal.dataset.gameChoice = game.player1.choice === 'heads' ? 'tails' : 'heads';
+    
+    // Clear previous input
+    document.getElementById('quick-join-name').value = '';
+    
+    // Show modal
+    modal.classList.add('active');
+    document.getElementById('quick-join-name').focus();
+  }
+
+  // Hide quick join modal
+  hideQuickJoinModal() {
+    const modal = document.getElementById('quick-join-modal');
+    modal.classList.remove('active');
+  }
+
+  // Handle quick join form submission
+  async handleQuickJoinGame(e) {
+    e.preventDefault();
+    
+    try {
+      const modal = document.getElementById('quick-join-modal');
+      const gameId = modal.dataset.gameId;
+      const choice = modal.dataset.gameChoice;
+      const playerName = this.gameManager.validatePlayerName(
+        document.getElementById('quick-join-name').value
+      );
+      
+      // Hide modal first
+      this.hideQuickJoinModal();
+      
+      // Show loading
+      this.showToast('Joining game...', 'info');
+      
+      // Join the game with the predetermined choice
+      const game = await this.gameManager.joinGame(gameId, playerName);
+      
+      // Set up real-time subscription for game updates
+      await this.gameManager.subscribeToGame(game.id, (updatedGame) => {
+        this.handleGameUpdate(updatedGame);
+      });
+      
+      this.showGameReadyScreen(game);
+      this.showToast(`Successfully joined the game! 🎮`, 'success');
+      
+    } catch (error) {
+      this.hideQuickJoinModal();
+      console.error('Quick join error:', error);
+      this.showToast(`Error: ${error.message}`, 'error');
+    }
+  }
+
+  // Show a toast message
+  showToast(message, type = 'info') {
+    const toastContainer = document.getElementById('toast-container');
+    
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `toast toast--${type}`;
+    toast.textContent = message;
+    
+    // Add to container
+    toastContainer.appendChild(toast);
+    
+    // Auto-remove toast after 3 seconds
+    setTimeout(() => {
+      toastContainer.removeChild(toast);
+    }, 3000);
+  }
+
+  // Helper method to get time ago string
+  getTimeAgo(timestamp) {
+    const now = Date.now();
+    const diff = now - timestamp;
+    const minutes = Math.floor(diff / 60000);
+    
+    if (minutes < 1) return 'Just now';
+    if (minutes < 60) return `${minutes}m ago`;
+    
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    
+    const days = Math.floor(hours / 24);
+    return `${days}d ago`;
   }
 
   // Initialize coin choice buttons
@@ -515,26 +659,23 @@ class UIManager {
 
   // Show confetti animation for winners
   showConfetti() {
-    const confettiElement = document.createElement('div');
-    confettiElement.innerHTML = '🎉'.repeat(50);
-    confettiElement.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 9999;
-      font-size: 2rem;
-      animation: confetti 3s ease-out;
-    `;
+    // Use js-confetti for better effects
+    this.jsConfetti.addConfetti({
+      confettiColors: [
+        '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dda0dd'
+      ],
+      confettiRadius: 6,
+      confettiNumber: 200
+    });
     
-    document.body.appendChild(confettiElement);
-    
-    // Remove after animation
+    // Add a second burst with emojis
     setTimeout(() => {
-      document.body.removeChild(confettiElement);
-    }, 3000);
+      this.jsConfetti.addConfetti({
+        emojis: ['🎉', '🎊', '🏆', '💰', '🪙', '🎯'],
+        emojiSize: 30,
+        confettiNumber: 30
+      });
+    }, 300);
   }
 
   // Format timestamp
